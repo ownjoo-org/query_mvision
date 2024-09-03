@@ -31,23 +31,30 @@ URL_TRELLIX_TOKEN: str = 'https://iam.cloud.trellix.com/iam/v1.1/token'
 URL_DEVICES: str = f'https://api.manage.trellix.com/epo/v2/devices'
 
 
-def logon(session: Session, client_id: str, client_secret: str) -> str:
-    params: dict = {
-        'grant_type': 'client_credentials',
-        'scope': DEFAULT_SCOPES,
-    }
-    resp_auth: Response = session.post(
-        url=URL_TRELLIX_TOKEN,
-        data=params,
-        auth=(client_id, client_secret),
-    )
-    resp_auth.raise_for_status()
-    resp_dict: dict = resp_auth.json()
-    session.headers.update(
-        {
-            'Authorization': f'{resp_dict.get("access_token")} {resp_dict.get("token_type")}'
-        },
-    )
+def get_token(session: Session, client_id: str, client_secret: str) -> None:
+    try:
+        params: dict = {
+            'grant_type': 'client_credentials',
+            'scope': DEFAULT_SCOPES,
+        }
+        resp_auth: Response = session.post(
+            url=URL_TRELLIX_TOKEN,
+            data=params,
+            auth=(client_id, client_secret),
+        )
+        resp_auth.raise_for_status()
+        resp_dict: dict = resp_auth.json()
+        session.headers.update(
+            {
+                'Authorization': f'{resp_dict.get("access_token")} {resp_dict.get("token_type")}'
+            },
+        )
+    except HTTPError as http_err:
+        print(f'HTTPError during logon: {http_err}')
+        raise
+    except Exception as exc_auth:
+        print(f'Unexpected error during logon: {exc_auth}')
+        raise
 
 
 def list_devices(
@@ -100,27 +107,9 @@ def main(
     session.headers = headers
     session.proxies = proxies
 
-    try:
-        token = logon(
-            session=session,
-            client_id=client_id,
-            client_secret=client_secret,
-        )
-    except HTTPError as http_err:
-        print(f'HTTPError during logon: {http_err}')
-        raise
-    except Exception as exc_auth:
-        print(f'Unexpected error during logon: {exc_auth}')
-        raise
+    get_token(session=session, client_id=client_id, client_secret=client_secret)
 
-    try:
-        yield from list_devices(session=session, page_size=page_size, limit=limit)
-    except HTTPError as http_err:
-        print(f'HTTPError during accounts retrieval: {http_err}')
-        raise
-    except Exception as exc_auth:
-        print(f'Unexpected error during accounts retrieval: {exc_auth}')
-        raise
+    yield from list_devices(session=session, page_size=page_size, limit=limit)
 
 
 if __name__ == '__main__':
@@ -130,20 +119,20 @@ if __name__ == '__main__':
         default=None,
         type=str,
         required=True,
-        help='The Client ID for yourmVisionadmin',
+        help='The Client ID for your mVision account',
     )
     parser.add_argument(
         '--client_secret',
         default=None,
         type=str,
         required=True,
-        help='The Client Secret for yourmVisionadmin',
+        help='The Client Secret for your mVision account',
     )
     parser.add_argument(
         '--api_key',
         type=str,
         required=True,
-        help='The Client Secret for yourmVisionadmin',
+        help='The Client Secret for your mVision account',
     )
     parser.add_argument(
         '--page_size',
