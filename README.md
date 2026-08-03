@@ -1,6 +1,7 @@
 # query_mvision
 
 [![License](https://img.shields.io/github/license/ownjoo/query_mvision)](LICENSE)
+[![Top language](https://img.shields.io/github/languages/top/ownjoo/query_mvision)](https://github.com/ownjoo/query_mvision) [![Stars](https://img.shields.io/github/stars/ownjoo/query_mvision)](https://github.com/ownjoo/query_mvision/stargazers) [![Forks](https://img.shields.io/github/forks/ownjoo/query_mvision)](https://github.com/ownjoo/query_mvision/forks) [![Issues](https://img.shields.io/github/issues/ownjoo/query_mvision)](https://github.com/ownjoo/query_mvision/issues) [![Pull requests](https://img.shields.io/github/issues-pr/ownjoo/query_mvision)](https://github.com/ownjoo/query_mvision/pulls)
 Query devices from Trellix mVision
 
 # SECURITY NOTE:
