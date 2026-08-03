@@ -1,4 +1,6 @@
 # query_mvision
+
+[![License](https://img.shields.io/github/license/ownjoo/query_mvision)](LICENSE)
 Query devices from Trellix mVision
 
 # SECURITY NOTE:
